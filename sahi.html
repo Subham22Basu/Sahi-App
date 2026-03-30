@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahi | Product Strategy & Design Case Study</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Warmer, softer background palette */
+            --apple-bg: #FDF9F1; 
+            --apple-text: #1D1D1F;
+            --apple-gray: #807B75;
+            --soft-ivory: #FFFCF7;
+            --warm-border: #EBE5D8;
+        }
+
+        /* Enforce snap scrolling on the main html/body */
+        html {
+            scroll-snap-type: y proximity;
+            scroll-behavior: smooth;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--apple-bg); 
+            color: var(--apple-text); 
+            margin: 0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Snap alignment for all major sections */
+        .snap-section {
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+        }
+        
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        .text-huge { font-size: clamp(3rem, 6vw, 5rem); line-height: 1.05; font-weight: 800; letter-spacing: -0.04em; }
+        
+        ::-webkit-scrollbar { width: 0; }
+
+        /* Sahi App UI CSS - Updated for softer tones */
+        .sahi-wrap { display: flex; justify-content: center; border-radius: 48px; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); perspective: 1000px;}
+        .sahi-phone { width: 340px; background: var(--soft-ivory); border-radius: 48px; border: 12px solid #EBE5D8; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08), inset 0 0 0 2px var(--soft-ivory); }
+        .sahi-statusbar { background: #0C447C; padding: 12px 24px 8px; display: flex; justify-content: space-between; }
+        .sahi-statusbar span { color: #fff; font-size: 12px; font-weight: 600; }
+        .sahi-header { background: #0C447C; padding: 8px 24px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .sahi-avatar { width: 42px; height: 42px; border-radius: 50%; background: #185FA5; border: 2px solid #378ADD; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 600; overflow: hidden; }
+        .sahi-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .sahi-body { flex: 1; overflow-y: auto; padding: 16px; height: 500px; background: #F4F0E6; }
+        .sahi-tabs { display: flex; background: var(--soft-ivory); border-top: 1px solid var(--warm-border); padding: 10px 0 12px; }
+        .sahi-tab { flex: 1; border: none; background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 0; transition: transform 0.2s; }
+        .sahi-tab:hover { transform: scale(1.05); }
+        .sahi-tab span { font-size: 11px; font-weight: 600; }
+        .sahi-phone p { margin: 0; }
+        .sahi-phone .card { background: var(--soft-ivory); border-radius: 20px; border: 1px solid rgba(0,0,0,0.03); padding: 18px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+        .sahi-phone .lbl { font-size: 12px; font-weight: 500; color: var(--apple-gray); margin: 0 0 6px; }
+        .sahi-phone .big { font-size: 32px; font-weight: 700; color: #0C447C; margin: 2px 0; letter-spacing: -1px;}
+        .sahi-phone .bar-bg { background: #F4F0E6; border-radius: 8px; height: 8px; overflow: hidden; margin-top: 10px; }
+        .sahi-phone .bar-fill { height: 100%; border-radius: 8px; background: #378ADD; transition: width 1s ease-out; }
+        .sahi-phone .badge { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 8px; }
+        .sahi-phone .green-bg { background: #E1F5EE; color: #0F6E56; }
+        .sahi-phone .blue-bg { background: #E6F1FB; color: #185FA5; }
+        .sahi-phone .apply-btn { background: #378ADD; color: #fff; border: none; border-radius: 12px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        #app-body { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .hero-pattern { background-image: radial-gradient(#D8D2C4 1px, transparent 1px); background-size: 32px 32px; }
+        .section-label { font-size: 13px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: #0C447C; margin-bottom: 24px; display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="fixed right-0 top-0 w-1.5 h-full bg-[#EBE5D8] z-[100]">
+        <div id="scroll-indicator" class="w-full bg-[#0C447C] h-0 rounded-b-full transition-all duration-100 ease-out"></div>
+    </div>
+
+    <nav class="fixed top-0 w-full z-50 bg-[#FDF9F1]/90 backdrop-blur-xl border-b border-[#EBE5D8]/80 py-5 px-10 flex justify-between items-center pr-12">
+        <div class="text-xl font-extrabold tracking-tight text-[#1D1D1F]">Sahi <span class="text-gray-500 font-normal">/ App Case Study</span></div>
+        <div class="hidden md:flex gap-8 text-[11px] font-bold tracking-widest uppercase text-gray-500">
+            <a href="#overview" class="hover:text-[#0C447C] transition">Overview</a>
+            <a href="#problem" class="hover:text-[#0C447C] transition">Problem</a>
+            <a href="#personas" class="hover:text-[#0C447C] transition">Users</a>
+            <a href="#solution" class="hover:text-[#0C447C] transition">Product</a>
+            <a href="#architecture" class="hover:text-[#0C447C] transition">Systems</a>
+            <a href="#business" class="hover:text-[#0C447C] transition">Business</a>
+        </div>
+    </nav>
+
+    <section id="overview" class="snap-section min-h-screen flex flex-col justify-center pt-20 px-10 relative hero-pattern border-b border-[#EBE5D8]">
+        <div class="max-w-[1200px] mx-auto w-full animate-fade-up">
+            <span class="inline-block bg-[#EAF4FF] text-[#0C447C] font-bold tracking-widest text-[10px] uppercase px-4 py-2 rounded-md mb-8">Product Strategy Case Study</span>
+            <h1 class="text-huge text-[#1D1D1F] mb-8 leading-tight max-w-5xl">Building financial infrastructure for India's 25M gig workers.</h1>
+            <p class="text-2xl text-[var(--apple-gray)] font-medium max-w-4xl leading-relaxed">
+                Sahi acts as a digital orchestrator—synthesizing India's public data stack (UPI, Account Aggregators, OCEN, e-Shram) to transform invisible platform labor into verified financial capital.
+            </p>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 pt-10 border-t border-[#EBE5D8] max-w-4xl">
+                <div>
+                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Role</h4>
+                    <p class="text-sm font-semibold text-[#1D1D1F]">Lead Product & Strategy</p>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Target Market</h4>
+                    <p class="text-sm font-semibold text-[#1D1D1F]">Indian Gig Economy</p>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Key Integration</h4>
+                    <p class="text-sm font-semibold text-[#1D1D1F]">India Stack (DPI)</p>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Core Focus</h4>
+                    <p class="text-sm font-semibold text-[#1D1D1F]">Data Orchestration, UX</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="problem" class="snap-section min-h-screen flex flex-col justify-center py-24 px-10 bg-[#FFFCF7] border-b border-[#EBE5D8]">
+        <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row gap-16 items-center">
+            <div class="md:w-5/12">
+                <span class="section-label">01 / The Problem space</span>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-[#1D1D1F] leading-tight mb-6">Data rich.<br>Financially invisible.</h2>
+                <p class="text-lg text-[var(--apple-gray)] font-medium leading-relaxed mb-6">Traditional underwriting models rely on formal salary slips. They are structurally incapable of assessing platform workers, who experience extreme income volatility and fractured employment across multiple apps (Swiggy, Uber, Urban Company).</p>
+                <div class="bg-red-50/50 p-6 rounded-2xl border border-red-100">
+                    <h4 class="font-bold text-red-800 mb-2">The Market Reality</h4>
+                    <p class="text-sm text-red-900/80">Despite routing thousands of rupees via UPI monthly, a delivery partner with a 4.9-star rating is categorized as "new to credit" (NTC). They are forced into the informal lending sector, paying up to 36% APR for basic vehicle repairs.</p>
+                </div>
+            </div>
+            <div class="md:w-7/12 grid grid-cols-2 gap-6">
+                <div class="bg-[#F4F0E6] p-8 rounded-3xl">
+                    <h3 class="text-3xl font-extrabold text-[#0C447C] mb-2">25M+</h3>
+                    <p class="text-sm font-bold text-[#807B75] uppercase tracking-wide mb-3">Gig Workers</p>
+                    <p class="text-sm text-gray-600">The rapidly expanding segment of India's workforce locked out of institutional credit.</p>
+                </div>
+                <div class="bg-[#F4F0E6] p-8 rounded-3xl">
+                    <h3 class="text-3xl font-extrabold text-[#0C447C] mb-2">₹0</h3>
+                    <p class="text-sm font-bold text-[#807B75] uppercase tracking-wide mb-3">Portable Benefits</p>
+                    <p class="text-sm text-gray-600">Insurance and provident funds remain tied to specific apps, lost when a worker churns.</p>
+                </div>
+                <div class="bg-[#F4F0E6] p-8 rounded-3xl">
+                    <h3 class="text-3xl font-extrabold text-[#0C447C] mb-2">30-40%</h3>
+                    <p class="text-sm font-bold text-[#807B75] uppercase tracking-wide mb-3">Income Volatility</p>
+                    <p class="text-sm text-gray-600">Month-to-month earning swings based on seasonal demand and algorithmic shifts.</p>
+                </div>
+                <div class="bg-[#F4F0E6] p-8 rounded-3xl border-2 border-[#0C447C]/10">
+                    <h3 class="text-xl font-bold text-[#1D1D1F] mb-2">The Missing Link</h3>
+                    <p class="text-sm text-gray-600">No central entity acts as a custodian for the worker's unified financial and reputational data.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="personas" class="snap-section min-h-screen flex flex-col justify-center py-24 px-10 bg-[var(--apple-bg)] border-b border-[#EBE5D8]">
+        <div class="max-w-[1400px] mx-auto w-full">
+            <div class="max-w-[1200px] mx-auto mb-16 text-center">
+                <span class="section-label">02 / User Insights</span>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-[#1D1D1F] max-w-3xl mx-auto leading-tight">Built for four distinct realities.</h2>
+                <p class="text-xl text-[var(--apple-gray)] mt-6 max-w-2xl mx-auto">Mapping the disjointed financial lives of platform workers to understand exactly where traditional banking fails them.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                <div class="flex flex-col items-center text-center">
+                    <img src="https://images.unsplash.com/photo-1620916297397-a4a5402a3c6c?q=80&w=300&auto=format&fit=crop" alt="Ravi" class="w-28 h-28 rounded-full object-cover shadow-xl mb-6 border-4 border-[#FFFCF7]">
+                    <h3 class="text-2xl font-extrabold text-[#1D1D1F]">Ravi</h3>
+                    <p class="text-[#378ADD] text-xs font-bold tracking-widest uppercase mt-1 mb-4">Delivery Partner</p>
+                    <p class="text-[var(--apple-gray)] font-medium leading-relaxed">"My income swings wildly. Sahi connects my bank data to smooth my payouts, making it feel like a steady, predictable salary."</p>
+                </div>
+                
+                <div class="flex flex-col items-center text-center">
+                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=300&auto=format&fit=crop" alt="Priya" class="w-28 h-28 rounded-full object-cover shadow-xl mb-6 border-4 border-[#FFFCF7]">
+                    <h3 class="text-2xl font-extrabold text-[#1D1D1F]">Priya</h3>
+                    <p class="text-[#1D9E75] text-xs font-bold tracking-widest uppercase mt-1 mb-4">Freelance Stylist</p>
+                    <p class="text-[var(--apple-gray)] font-medium leading-relaxed">"Banks rejected my bike loan. Sahi converted my UPI transaction history into a Trust Metric so I could finally get approved."</p>
+                </div>
+
+                <div class="flex flex-col items-center text-center">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=300&auto=format&fit=crop" alt="Arjun" class="w-28 h-28 rounded-full object-cover shadow-xl mb-6 border-4 border-[#FFFCF7]">
+                    <h3 class="text-2xl font-extrabold text-[#1D1D1F]">Arjun</h3>
+                    <p class="text-[#E27200] text-xs font-bold tracking-widest uppercase mt-1 mb-4">Rideshare Driver</p>
+                    <p class="text-[var(--apple-gray)] font-medium leading-relaxed">"I drive for both Uber and Ola. Sahi's API acts as my Identity Anchor, keeping my health insurance active across all apps."</p>
+                </div>
+
+                <div class="flex flex-col items-center text-center">
+                    <img src="https://images.unsplash.com/photo-1589156280159-27698a70f29e?q=80&w=300&auto=format&fit=crop" alt="Sunita" class="w-28 h-28 rounded-full object-cover shadow-xl mb-6 border-4 border-[#FFFCF7]">
+                    <h3 class="text-2xl font-extrabold text-[#1D1D1F]">Sunita</h3>
+                    <p class="text-[#9333EA] text-xs font-bold tracking-widest uppercase mt-1 mb-4">Cloud Kitchen Chef</p>
+                    <p class="text-[var(--apple-gray)] font-medium leading-relaxed">"I needed ₹8,000 for a commercial blender. By pulling my government credentials instantly, Sahi got me micro-credit in minutes."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="solution" class="pt-32 pb-10 px-10 bg-[#FFFCF7] text-center">
+        <div class="max-w-[1200px] mx-auto">
+            <span class="section-label">03 / The Product UI</span>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-[#1D1D1F] max-w-3xl mx-auto leading-tight mb-6">Translating complex backend architecture into a fluid UI.</h2>
+            <p class="text-xl text-[var(--apple-gray)] max-w-2xl mx-auto">Sahi features a three-pillar interaction model—Haven, Anchor, and Metric—allowing users to visualize how their scattered institutional data becomes actionable leverage. Scroll to explore the flow.</p>
+        </div>
+    </section>
+
+    <section id="scrolly-wrapper" class="relative bg-[#FFFCF7]" style="height: 200vh;">
+        <div class="sticky top-0 h-screen w-full flex items-center overflow-hidden transition-colors duration-500 border-b border-[#EBE5D8]" id="phone-bg-container">
+            <div class="max-w-[1400px] w-full mx-auto flex flex-col md:flex-row px-10">
+                
+                <div class="w-full md:w-[62%] relative h-[300px] md:h-[400px]">
+                    <div id="text-haven" class="absolute inset-0 flex flex-col justify-center transition-opacity duration-300 opacity-100">
+                        <span class="text-blue-600 font-bold uppercase tracking-widest text-[11px] mb-4 block">Core Pillar 1</span>
+                        <h2 class="text-[clamp(2.5rem,5vw,4rem)] font-extrabold text-[#1D1D1F] mb-6 leading-none tracking-tight">The Data Haven.</h2>
+                        <p class="text-xl text-[var(--apple-gray)] font-medium leading-relaxed text-balance max-w-xl"><strong>UX Goal: Establish Trust & Stability.</strong><br> We visualize the direct connection to Account Aggregators. Sahi acts as an automated escrow, analyzing bank statements to buffer high-earning festival weeks and release funds during slow periods—creating a synthetic, stable salary.</p>
+                    </div>
+
+                    <div id="text-anchor" class="absolute inset-0 flex flex-col justify-center transition-opacity duration-300 opacity-0 pointer-events-none">
+                        <span class="text-indigo-600 font-bold uppercase tracking-widest text-[11px] mb-4 block">Core Pillar 2</span>
+                        <h2 class="text-[clamp(2.5rem,5vw,4rem)] font-extrabold text-[#1D1D1F] mb-6 leading-none tracking-tight">The Identity Anchor.</h2>
+                        <p class="text-xl text-[var(--apple-gray)] font-medium leading-relaxed text-balance max-w-xl"><strong>UX Goal: Emphasize Portability.</strong><br> Workers link their identities via Aadhaar and DigiLocker. Sahi routes these verified credentials instantly, allowing health benefits and micro-pension plans (NPS) to remain active and tethered to the individual, regardless of which app they drive for.</p>
+                    </div>
+
+                    <div id="text-metric" class="absolute inset-0 flex flex-col justify-center transition-opacity duration-300 opacity-0 pointer-events-none">
+                        <span class="text-emerald-600 font-bold uppercase tracking-widest text-[11px] mb-4 block">Core Pillar 3</span>
+                        <h2 class="text-[clamp(2.5rem,5vw,4rem)] font-extrabold text-[#1D1D1F] mb-6 leading-none tracking-tight">The Trust Metric.</h2>
+                        <p class="text-xl text-[var(--apple-gray)] font-medium leading-relaxed text-balance max-w-xl"><strong>UX Goal: Drive Financial Action.</strong><br> We gamify real-time UPI network history and platform payout regularity. Sahi translates this daily cash flow into a high-trust credibility rating, connecting users to lenders via the OCEN network for instant, low-interest equipment loans.</p>
+                    </div>
+                </div>
+
+                <div class="hidden md:flex w-[38%] justify-center items-center">
+                    <div class="sahi-wrap" id="phone-wrapper">
+                        <div class="sahi-phone shadow-2xl">
+                            <div class="sahi-statusbar"><span>9:41</span><span>100%</span></div>
+                            <div class="sahi-header">
+                                <div>
+                                    <p style="color:#85B7EB;font-size:12px;margin:0;font-weight:600;">Namaste, Ravi</p>
+                                    <p style="color:#fff;font-size:24px;font-weight:700;margin:1px 0 0;letter-spacing:-0.5px;">Sahi</p>
+                                </div>
+                                <div class="sahi-avatar">
+                                    <img src="https://images.unsplash.com/photo-1620916297397-a4a5402a3c6c?q=80&w=150&auto=format&fit=crop" alt="Ravi">
+                                </div>
+                            </div>
+                            <div class="sahi-body" id="app-body"></div>
+                            <div class="sahi-tabs" id="app-tabs"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="architecture" class="snap-section min-h-screen flex flex-col justify-center py-24 px-10 bg-[#0A192F] text-[#FDF9F1]">
+        <div class="max-w-[1200px] mx-auto w-full">
+            <div class="mb-16">
+                <span class="text-cyan-400 font-extrabold uppercase tracking-widest text-[11px] mb-4 block">04 / Systems Thinking</span>
+                <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-white">India Stack Integration.</h2>
+                <p class="text-xl text-slate-300 max-w-3xl">Sahi does not rely on screen-scraping or manual uploads. The product acts as an orchestration layer, securely plugging into India's highly advanced Digital Public Infrastructure (DPI) to authenticate and assess workers in real-time.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-[#112240] p-8 rounded-3xl border border-white/10">
+                    <div class="w-10 h-10 bg-cyan-500/20 text-cyan-400 rounded-lg flex items-center justify-center font-bold text-lg mb-6">1</div>
+                    <h3 class="text-xl font-bold mb-2 text-white">Identity & Labor</h3>
+                    <p class="text-cyan-400 text-xs font-bold tracking-widest uppercase mb-4">UIDAI & e-Shram</p>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4">Sahi utilizes Aadhaar e-KYC for instant onboarding. We cross-reference this with the Ministry of Labour’s <strong>e-Shram portal</strong> to formally classify the user as an unorganized sector worker, immediately qualifying them for state-sponsored subsidies and PMJAY health top-ups.</p>
+                </div>
+
+                <div class="bg-[#112240] p-8 rounded-3xl border border-white/10">
+                    <div class="w-10 h-10 bg-blue-500/20 text-blue-400 rounded-lg flex items-center justify-center font-bold text-lg mb-6">2</div>
+                    <h3 class="text-xl font-bold mb-2 text-white">Financial Flow</h3>
+                    <p class="text-blue-400 text-xs font-bold tracking-widest uppercase mb-4">Account Aggregators (AA)</p>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4">Operating within the RBI's AA framework, Sahi requests encrypted, user-consented access to historical bank statements. Our backend parses transaction metadata to identify algorithmic payouts from platforms (Uber, Swiggy) to establish true earning capacity without tax returns.</p>
+                </div>
+
+                <div class="bg-[#112240] p-8 rounded-3xl border border-white/10">
+                    <div class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-lg flex items-center justify-center font-bold text-lg mb-6">3</div>
+                    <h3 class="text-xl font-bold mb-2 text-white">Real-Time Intent</h3>
+                    <p class="text-emerald-400 text-xs font-bold tracking-widest uppercase mb-4">UPI Network Data</p>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4">We monitor the frequency, velocity, and success rates of UPI transactions. Consistent, small-value transfers (buying fuel daily, paying local vendors) are fed into our Intent Signal Algorithm, predicting a borrower's likelihood to repay micro-installments.</p>
+                </div>
+
+                <div class="bg-[#112240] p-8 rounded-3xl border border-white/10">
+                    <div class="w-10 h-10 bg-purple-500/20 text-purple-400 rounded-lg flex items-center justify-center font-bold text-lg mb-6">4</div>
+                    <h3 class="text-xl font-bold mb-2 text-white">Capital Access</h3>
+                    <p class="text-purple-400 text-xs font-bold tracking-widest uppercase mb-4">OCEN Integration</p>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4">Sahi functions as a Loan Service Provider (LSP) on the Open Credit Enablement Network. We package the aggregated Trust Metric and present it to participating NBFCs, allowing lenders to underwrite and disburse tailored sachet-loans (₹5k - ₹20k) in minutes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="snap-section min-h-screen flex flex-col justify-center py-24 px-10 bg-[#FFFCF7] border-b border-[#EBE5D8]">
+        <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row gap-16 items-center">
+            <div class="md:w-1/3">
+                <span class="section-label">05 / Security Strategy</span>
+                <h2 class="text-4xl font-extrabold text-[#1D1D1F] leading-tight mb-4">Privacy by Design.</h2>
+                <p class="text-lg text-[var(--apple-gray)] font-medium leading-relaxed">Handling sensitive Aadhaar and banking data requires military-grade architecture. Sahi is engineered to act as a router, not a honeypot.</p>
+            </div>
+            <div class="md:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="border-l-4 border-blue-500 pl-6 py-2">
+                    <h4 class="text-xl font-bold text-[#1D1D1F] mb-2">Explicit Consent Architecture</h4>
+                    <p class="text-sm text-gray-600">Built strictly on the Data Empowerment and Protection Architecture (DEPA). Users grant granular, time-bound consent for every data pull via the Account Aggregator network. Sahi cannot access data invisibly.</p>
+                </div>
+                <div class="border-l-4 border-emerald-500 pl-6 py-2">
+                    <h4 class="text-xl font-bold text-[#1D1D1F] mb-2">Zero-Knowledge Storage</h4>
+                    <p class="text-sm text-gray-600">Raw transaction logs are analyzed on edge or instantly discarded. Sahi stores only the computed "Trust Metric" hashes, ensuring that even in the event of a breach, raw financial histories are mathematically inaccessible.</p>
+                </div>
+                <div class="border-l-4 border-purple-500 pl-6 py-2">
+                    <h4 class="text-xl font-bold text-[#1D1D1F] mb-2">Data Tokenization</h4>
+                    <p class="text-sm text-gray-600">When communicating with third-party lenders via OCEN, Aadhaar numbers and bank account details are fully tokenized. Lenders receive an encrypted intent profile, protecting the worker from targeted predatory lending.</p>
+                </div>
+                <div class="border-l-4 border-orange-500 pl-6 py-2">
+                    <h4 class="text-xl font-bold text-[#1D1D1F] mb-2">Data Locality Compliance</h4>
+                    <p class="text-sm text-gray-600">Adhering strictly to RBI circulars, all transactional data processing and cloud hosting is maintained on localized, Indian-based AWS servers (ap-south-1), ensuring full regulatory compliance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="business" class="snap-section min-h-screen flex flex-col justify-center py-24 px-10 bg-[#F4F0E6] border-b border-[#EBE5D8]">
+        <div class="max-w-[1200px] mx-auto flex flex-col lg:flex-row gap-16">
+            
+            <div class="lg:w-1/2">
+                <span class="section-label">06 / Viability</span>
+                <h2 class="text-4xl font-extrabold text-[#1D1D1F] mb-6">The Business Model.</h2>
+                <p class="text-lg text-[var(--apple-gray)] mb-10">To ensure long-term sustainability and keep the core platform free for gig workers, Sahi operates on a hybrid B2B2C monetization structure.</p>
+                
+                <div class="space-y-6">
+                    <div class="bg-[#FFFCF7] p-6 rounded-2xl shadow-sm border border-[#EBE5D8]">
+                        <div class="flex items-center gap-4 mb-3">
+                            <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold">A</div>
+                            <h4 class="text-xl font-bold text-[#1D1D1F]">LSP Commissions (Lending)</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm">By acting as an LSP on the OCEN protocol, Sahi earns a 1.5% - 2.5% origination fee from partnered Banks and NBFCs for every successfully disbursed micro-loan, solving the high Customer Acquisition Cost (CAC) for lenders.</p>
+                    </div>
+
+                    <div class="bg-[#FFFCF7] p-6 rounded-2xl shadow-sm border border-[#EBE5D8]">
+                        <div class="flex items-center gap-4 mb-3">
+                            <div class="bg-green-100 text-green-700 p-2 rounded-lg font-bold">B</div>
+                            <h4 class="text-xl font-bold text-[#1D1D1F]">Platform Partnership SaaS</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm">Aggregators (Zomato, Urban Company) pay a monthly subscription fee per active user to integrate Sahi as a "worker retention and wellness benefit." This reduces their churn rates, which currently exceed 15% monthly.</p>
+                    </div>
+
+                    <div class="bg-[#FFFCF7] p-6 rounded-2xl shadow-sm border border-[#EBE5D8]">
+                        <div class="flex items-center gap-4 mb-3">
+                            <div class="bg-purple-100 text-purple-700 p-2 rounded-lg font-bold">C</div>
+                            <h4 class="text-xl font-bold text-[#1D1D1F]">Premium API Services</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm">While the core app is free, Sahi charges a nominal fee for advanced financial actions, such as automated multi-app tax filing (ITR-4 for presumptive taxation) and custom micro-insurance claim routing.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:w-1/2">
+                <span class="section-label">07 / Scalability</span>
+                <h2 class="text-4xl font-extrabold text-[#1D1D1F] mb-6">Future Prospects.</h2>
+                <p class="text-lg text-[var(--apple-gray)] mb-10">The gig economy is just the wedge. Sahi is positioned to become the definitive financial layer for the broader creator and informal economy.</p>
+                
+                <div class="space-y-8 mt-4">
+                    <div class="border-l-4 border-[#0C447C] pl-6">
+                        <h4 class="text-xl font-bold text-[#1D1D1F] mb-2">ONDC Integration (Micro-Merchants)</h4>
+                        <p class="text-gray-600 text-sm leading-relaxed">As the Open Network for Digital Commerce (ONDC) expands, Sahi will adapt its Trust Metric for independent online sellers. By underwriting store inventory based on ONDC buyer transaction data rather than CIBIL scores, Sahi can finance millions of home-based D2C businesses.</p>
+                    </div>
+
+                    <div class="border-l-4 border-[#1D9E75] pl-6">
+                        <h4 class="text-xl font-bold text-[#1D1D1F] mb-2">AI-Driven Income Smoothing</h4>
+                        <p class="text-gray-600 text-sm leading-relaxed">Transitioning the Data Haven from a reactive savings buffer to a predictive AI engine. By analyzing macroeconomic data, local festival calendars, and weather patterns (which affect delivery demand), Sahi will accurately predict a worker's upcoming slow week and preemptively adjust their auto-save quotas.</p>
+                    </div>
+
+                    <div class="border-l-4 border-[#E27200] pl-6">
+                        <h4 class="text-xl font-bold text-[#1D1D1F] mb-2">Peer-to-Peer Mutual Aid Pools</h4>
+                        <p class="text-gray-600 text-sm leading-relaxed">Leveraging the network effect to create verified, community-driven emergency funds (modernized Chit Funds). Workers within the same high-tier Trust Metric bracket can pool micro-savings daily, generating low-interest, community-approved emergency capital instantly.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="snap-section min-h-screen flex flex-col justify-center py-24 px-10 bg-[#FFFCF7] border-b border-[#EBE5D8]">
+        <div class="max-w-[1200px] mx-auto w-full text-center">
+            <span class="section-label">08 / Product Strategy</span>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-[#1D1D1F] mb-16">Measuring Success.</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="p-8 rounded-3xl bg-[#F4F0E6]">
+                    <p class="text-xs font-bold text-[#807B75] uppercase tracking-widest mb-4">Activation</p>
+                    <h3 class="text-4xl font-extrabold text-[#0C447C] mb-2">&lt; 3 Min</h3>
+                    <p class="text-sm font-bold text-[#1D1D1F] mb-2">Time to Trust Metric</p>
+                    <p class="text-xs text-gray-600">Targeting a sub-3-minute frictionless flow from app install to linking the AA and generating the first Sahi Score.</p>
+                </div>
+                
+                <div class="p-8 rounded-3xl bg-[#F4F0E6]">
+                    <p class="text-xs font-bold text-[#807B75] uppercase tracking-widest mb-4">Retention</p>
+                    <h3 class="text-4xl font-extrabold text-[#0C447C] mb-2">65%</h3>
+                    <p class="text-sm font-bold text-[#1D1D1F] mb-2">MAU to DAU Ratio</p>
+                    <p class="text-xs text-gray-600">By gamifying the Trust Metric UI to update daily based on UPI flows, we encourage daily habit formation.</p>
+                </div>
+
+                <div class="p-8 rounded-3xl bg-[#F4F0E6]">
+                    <p class="text-xs font-bold text-[#807B75] uppercase tracking-widest mb-4">Monetization</p>
+                    <h3 class="text-4xl font-extrabold text-[#0C447C] mb-2">12%</h3>
+                    <p class="text-sm font-bold text-[#1D1D1F] mb-2">Loan Conversion Rate</p>
+                    <p class="text-xs text-gray-600">Goal of converting 12% of highly-rated users to accept preemptive micro-loans during identified low-income periods.</p>
+                </div>
+
+                <div class="p-8 rounded-3xl bg-[#F4F0E6]">
+                    <p class="text-xs font-bold text-[#807B75] uppercase tracking-widest mb-4">Impact</p>
+                    <h3 class="text-4xl font-extrabold text-[#0C447C] mb-2">- 40%</h3>
+                    <p class="text-sm font-bold text-[#1D1D1F] mb-2">Reduction in APR</p>
+                    <p class="text-xs text-gray-600">Shifting users from informal, predatory moneylenders (36%+ APR) to formalized NBFC loans via OCEN (18-24% APR).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="snap-section min-h-[60vh] flex flex-col justify-center py-24 px-10 bg-[var(--apple-bg)] text-center relative">
+        <div class="max-w-2xl mx-auto">
+            <h2 class="text-4xl font-extrabold text-[#1D1D1F] mb-6">Thanks for reviewing my strategy.</h2>
+            <p class="text-[var(--apple-gray)] mb-10 text-lg">If you'd like to discuss the wireframing phase, the nuances of the Account Aggregator APIs, or my complete design system methodology for Sahi, I'd love to chat.</p>
+            
+            <a href="mailto:subham.work@yahoo.com" class="bg-[#1D1D1F] text-white px-10 py-5 rounded-full font-bold text-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 inline-block mt-4">Email: subham.work@yahoo.com</a>
+            
+            <p class="mt-20 text-xs text-gray-400 font-bold uppercase tracking-widest">Credits: Subham Basu &copy; 2026</p>
+        </div>
+    </section>
+
+    <script>
+        /* 1. GLOBAL SCROLL INDICATOR */
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("scroll-indicator").style.height = scrolled + "%";
+        });
+
+        /* 2. APP UI LOGIC */
+        var cur = 'haven'; 
+        var tabDefs = [
+            {id:'home', label:'Home', path:'M10 3L3 9v8a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1V9z'},
+            {id:'haven', label:'Haven', path:'M3 17V11h3v6H3zm5 0V7h3v10H8zm5 0V4h3v13h-3z'},
+            {id:'anchor', label:'Anchor', path:'M10 3S4 5 4 10c0 3 2.5 5.5 6 7 3.5-1.5 6-4 6-7 0-5-6-7-6-7z'},
+            {id:'metric', label:'Metric', path:'M2 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm0 3h16'}
+        ];
+
+        function icon(path, col) { return '<svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="'+col+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="'+path+'"/></svg>'; }
+
+        function renderTabs() {
+            document.getElementById('app-tabs').innerHTML = tabDefs.map(function(t) {
+                var col = t.id === cur ? '#0C447C' : '#86868B';
+                return '<button class="sahi-tab">' + icon(t.path, col) + '<span style="color:'+col+'">'+t.label+'</span></button>';
+            }).join('');
+        }
+
+        function renderBody() {
+            var h = '';
+            if (cur === 'haven') {
+                var weeks = [{l:'W1',v:6800},{l:'W2',v:3200},{l:'W3',v:5400},{l:'W4',v:4250}];
+                var maxV = 7000;
+                var bars = weeks.map(function(w) {
+                var h = Math.round((w.v/maxV)*100);
+                var col = w.v >= 5000 ? '#378ADD' : (w.v >= 4000 ? '#85B7EB' : '#B5D4F4');
+                return '<div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;"><span style="font-size:11px;color:#1D1D1F;font-weight:600;">&#8377;'+(w.v/1000).toFixed(1)+'k</span><div style="width:100%;height:'+h+'px;background:'+col+';border-radius:6px 6px 0 0;"></div><span style="font-size:11px;font-weight:600;color:#86868B;">'+w.l+'</span></div>';
+                }).join('');
+                h = '<div class="card"><p class="lbl">Income smoothing (Gov & Bank verified)</p><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;"><span style="font-size:14px;font-weight:600;color:#1D1D1F;">Auto-buffer high weeks</span><div style="width:46px;height:26px;background:#34C759;border-radius:14px;display:flex;align-items:center;padding:3px;"><div style="width:20px;height:20px;background:#fff;border-radius:50%;margin-left:auto;box-shadow:0 2px 4px rgba(0,0,0,0.2);"></div></div></div></div>'
+                + '<div class="card"><p class="lbl">Weekly earnings this month</p><div style="display:flex;align-items:flex-end;gap:10px;height:140px;margin-top:16px;">'+bars+'</div></div>'
+                + '<div class="card bg-[#E1F5EE] border-none"><p class="lbl" style="color:#0F6E56">Smoothed payout target</p><p style="font-size:24px;font-weight:800;color:#0F6E56;margin:4px 0;">&#8377;12,000 / mo</p></div>';
+            } else if (cur === 'anchor') {
+                h = '<div class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start;"><div><p class="lbl">Health insurance via API</p><p style="font-size:16px;font-weight:700;color:#1D1D1F;margin:4px 0;">PMJAY + Top-up</p><p style="font-size:12px;font-weight:500;color:#86868B;">Cover: &#8377;5,00,000</p></div><span class="badge green-bg">Active</span></div></div>'
+                + '<div class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start;"><div><p class="lbl">NPS pension</p><p style="font-size:16px;font-weight:700;color:#1D1D1F;margin:4px 0;">&#8377;450 / month</p><p style="font-size:12px;font-weight:500;color:#86868B;">Saved: &#8377;11,250</p></div><span class="badge blue-bg">Active</span></div><div class="bar-bg" style="margin-top:14px;"><div class="bar-fill" style="width:42%;"></div></div></div>'
+                + '<div class="card bg-[#F0F7FF] border-[#D0E5FF]"><p class="lbl" style="color:#0C447C">Active Platforms</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">'
+                + ['Swiggy','Uber','Zomato'].map(function(p){ return '<span class="badge bg-white text-[#0C447C] shadow-sm">'+p+'</span>'; }).join('')
+                + '</div></div>';
+            } else if (cur === 'metric') {
+                h = '<div class="card text-center py-6"><p class="lbl">Sahi Score (UPI Aggregated)</p><p style="font-size:56px;font-weight:800;color:#E27200;margin:4px 0;line-height:1;">742</p><p style="font-size:14px;font-weight:600;color:#1D9E75;margin-top:8px;">Excellent intent signal 🌟</p></div>'
+                + '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid #EBE5D8;"><div><p style="font-size:14px;font-weight:700;color:#1D1D1F;margin:0 0 4px;">Vehicle loan</p><p style="font-size:12px;font-weight:500;color:#86868B;margin:0;">Up to &#8377;15,000</p></div><button class="apply-btn bg-black">Apply</button></div>'
+                + '<div style="display:flex;justify-content:space-between;align-items:center;"><div><p style="font-size:14px;font-weight:700;color:#1D1D1F;margin:0 0 4px;">Equipment upgrade</p><p style="font-size:12px;font-weight:500;color:#86868B;margin:0;">Up to &#8377;8,000</p></div><button class="apply-btn bg-black">Apply</button></div></div>';
+            }
+            document.getElementById('app-body').innerHTML = h;
+        }
+
+        function setAppView(id) {
+            if(cur === id) return;
+            cur = id;
+            renderTabs();
+            var bodyEl = document.getElementById('app-body');
+            bodyEl.style.animation = 'none';
+            bodyEl.offsetHeight; 
+            bodyEl.style.animation = null; 
+            renderBody();
+        }
+
+        renderTabs();
+        renderBody();
+
+        /* 3. ACCELERATED SCROLL LOGIC FOR PROTOTYPE SECTION */
+        window.addEventListener('scroll', () => {
+            const wrapper = document.getElementById('scrolly-wrapper');
+            const rect = wrapper.getBoundingClientRect();
+            
+            if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
+                
+                const scrollProgress = Math.abs(rect.top) / (rect.height - window.innerHeight);
+
+                const tHaven = document.getElementById('text-haven');
+                const tAnchor = document.getElementById('text-anchor');
+                const tMetric = document.getElementById('text-metric');
+                const bgContainer = document.getElementById('phone-bg-container');
+                const phoneWrapper = document.getElementById('phone-wrapper');
+
+                if (scrollProgress < 0.33) {
+                    tHaven.style.opacity = '1'; tAnchor.style.opacity = '0'; tMetric.style.opacity = '0';
+                    bgContainer.style.backgroundColor = '#FFFCF7';
+                    phoneWrapper.style.transform = 'rotateY(-6deg) rotateX(2deg) scale(1.02)';
+                    setAppView('haven');
+                } 
+                else if (scrollProgress >= 0.33 && scrollProgress < 0.66) {
+                    tHaven.style.opacity = '0'; tAnchor.style.opacity = '1'; tMetric.style.opacity = '0';
+                    bgContainer.style.backgroundColor = '#FDF9F1'; 
+                    phoneWrapper.style.transform = 'rotateY(0deg) rotateX(0deg) scale(1)';
+                    setAppView('anchor');
+                } 
+                else {
+                    tHaven.style.opacity = '0'; tAnchor.style.opacity = '0'; tMetric.style.opacity = '1';
+                    bgContainer.style.backgroundColor = '#FFFCF7';
+                    phoneWrapper.style.transform = 'rotateY(6deg) rotateX(2deg) scale(1.02)';
+                    setAppView('metric');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
