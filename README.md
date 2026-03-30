@@ -1,6 +1,6 @@
 # Sahi: Financial Infrastructure for the Gig Economy
 
-### 🚀 View Live Case Study (inquisitive-melba-71c3ca.netlify.app)
+### [🚀 View Live Case Study] (inquisitive-melba-71c3ca.netlify.app)
 
 ## 📌 Project Overview
 **Sahi** is a conceptual fintech product strategy and UX case study designed to solve the financial invisibility of India’s 25 million platform workers. By synthesizing India's Digital Public Infrastructure (DPI)—including UPI, Account Aggregators, and OCEN—Sahi transforms volatile platform labor into verified financial capital.
